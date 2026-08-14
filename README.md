@@ -14,13 +14,36 @@ Next.js 16 (App Router) · React 19 · Tailwind CSS v4 (config dans le CSS, pas 
 `tailwind.config.js`) · `lucide-react` v1 · `tw-animate-css` · DM Sans via `next/font/google`.
 Animations en CSS pur — aucune bibliothèque d'animation.
 
-## Déploiement
+## Déploiement — Cloudflare Workers
 
-Le projet Next.js est **à la racine du dépôt** : tout hébergeur le détecte sans réglage.
+Le site tourne sur Cloudflare Workers via l'adaptateur [OpenNext](https://opennext.js.org/cloudflare).
 
-Il a d'abord vécu dans un sous-dossier, et l'hébergeur servait alors l'`index.html` de la racine
-comme site statique sans jamais construire l'application. D'où cette structure — ne pas remettre
-de `index.html` à la racine.
+```bash
+npm run build      # build Next + bundle du Worker → .open-next/
+npm run preview    # build puis exécution locale dans workerd
+npm run deploy     # build puis déploiement
+```
+
+Réglage attendu côté Cloudflare — **Settings → Build** :
+
+| Champ | Valeur |
+|---|---|
+| Deploy command | `npm run deploy` |
+| Build command | *(vide — `npm run deploy` s'en charge)* |
+
+Trois pièges déjà rencontrés, à ne pas réintroduire :
+
+- **Le `name` de `wrangler.jsonc` doit être celui du Worker Cloudflare** (`easyafrik-lp`). Sans
+  configuration versionnée, la CI lançait `opennextjs-cloudflare migrate` à chaque build et
+  dérivait ce nom du `package.json`, produisant une liaison vers un Worker inexistant.
+- **`open-next.config.ts` fixe `buildCommand` sur `npm run build:next`.** Sans cela l'adaptateur
+  rappellerait `npm run build`, c'est-à-dire lui-même, en boucle.
+- **Pas de cache incrémental R2.** Quatre routes, dont trois pré-rendues : rien à revalider. Le
+  cache imposait une liaison du Worker vers lui-même, source du premier échec.
+
+Le projet Next.js est **à la racine du dépôt**. Il a d'abord vécu dans un sous-dossier, et
+l'hébergeur servait alors l'`index.html` de la racine comme site statique sans jamais construire
+l'application — ne pas remettre de `index.html` à la racine.
 
 ## Structure
 
