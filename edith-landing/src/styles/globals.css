@@ -1,0 +1,690 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/*
+  Variante `.dark`, requise par les composants shadcn/ui restaurés pour
+  l'éditeur (apps/frontend/src/components/ui). La landing ne l'utilise pas.
+*/
+@custom-variant dark (&:is(.dark *));
+
+/*
+  ⚠️ ÉCART AVEC LE DÉPÔT — ligne neutralisée dans ce projet landing seul.
+  L'original scanne les classes de streamdown (rendu Markdown du chatbot) :
+      @source '../../node_modules/streamdown/dist';
+  Le paquet n'est pas installé ici, et Tailwind échoue sur un chemin absent.
+  À rétablir dès que streamdown revient dans les dépendances.
+*/
+
+/*
+  DM Sans, auto-hébergée par next/font — voir app/layout.tsx.
+
+  « Google Sans » est nommée en premier volontairement : c'est la police voulue,
+  mais elle est propriétaire et absente du catalogue Google Fonts, donc rien ne
+  la sert. Elle ne s'appliquera que sur une machine qui la possède déjà, ou le
+  jour où elle sera licenciée et auto-hébergée — auquel cas il n'y aura rien à
+  changer ici. DM Sans assure le rendu réel pour tout le monde.
+*/
+
+@theme inline {
+  --font-sans:
+    'Google Sans', var(--font-dm-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  /*
+    Échelle typographique dérivée des deux tailles de référence :
+    titre 42/48 et corps 16/24. Tout le reste s'y raccroche —
+    les niveaux au-dessus et en dessous sont des multiples de ces deux-là,
+    pas des valeurs inventées au cas par cas.
+  */
+  /* Plancher à 34px : à 42px le titre du hero débordait sur un écran de 360px. */
+  /*
+    Approches légèrement desserrées depuis le passage à DM Sans. Les valeurs
+    précédentes (-0.04 / -0.03 / -0.02em) étaient calées sur Plus Jakarta Sans,
+    une humanistique étroite qui encaisse un tracking très serré. DM Sans est
+    géométrique : ses bols circulaires se percutent plus tôt, surtout sur les
+    combinaisons rondes (« oo », « ea », « éas »).
+  */
+  --text-display: clamp(2.125rem, 6vw, 4.75rem); /* 34px → 76px */
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.03em;
+
+  --text-title: 2.625rem; /* 42px */
+  --text-title--line-height: 3rem; /* 48px */
+  --text-title--letter-spacing: -0.025em;
+
+  --text-subtitle: 1.75rem; /* 28px */
+  --text-subtitle--line-height: 2.25rem; /* 36px */
+  --text-subtitle--letter-spacing: -0.015em;
+
+  --text-lead: 1.25rem; /* 20px */
+  --text-lead--line-height: 1.875rem; /* 30px */
+
+  --text-body: 1rem; /* 16px — la base */
+  --text-body--line-height: 1.5rem; /* 24px */
+
+  --text-small: 0.875rem; /* 14px */
+  --text-small--line-height: 1.25rem; /* 20px */
+
+  --text-caption: 0.8125rem; /* 13px */
+  --text-caption--line-height: 1.125rem; /* 18px */
+
+  --color-canvas: #fafafa;
+  --color-surface: #ffffff;
+  --color-field: #f7f7f7;
+  --color-hairline: #e6e6e7;
+  --color-hairline-strong: #d6d6d8;
+  --color-ink: #1d1d1f;
+  --color-ink-soft: #6e6e73;
+  --color-ink-mute: #8b8b90;
+
+  /*
+    Dégradé de marque en 5 arrêts : bleu → mauve → rose → rouge → orange.
+    Trois arrêts seulement donnaient un violet trop saturé au départ.
+  */
+  --color-accent-start: #3e86c6;
+  --color-accent-2: #a666aa;
+  --color-accent-mid: #ec4492;
+  --color-accent-4: #ee4454;
+  --color-accent-end: #f05427;
+
+  --color-youtube: #ff0033;
+  --color-danger: #d92642;
+}
+
+/*
+  Tokens shadcn/ui, restaurés depuis db44f9e pour l'éditeur (apps/frontend/src/
+  components/ui, buttons, inputs…). Un second bloc `@theme inline` plutôt qu'une
+  fusion dans le premier : Tailwind v4 les combine automatiquement, et ça évite
+  de mélanger le système de la landing avec celui, plus générique, de l'éditeur.
+
+  `--font-sans` n'est PAS repris ici : l'original le redéfinissait en
+  `var(--font-sans)`, une référence circulaire qui aurait cassé la police sur
+  tout le site. Le produit garde la sienne (DM Sans).
+*/
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-easyafrik-bg: var(--easyafrik-bg);
+  --color-easyafrik-accent: var(--easyafrik-accent);
+  --color-easyafrik-accent-light: var(--easyafrik-accent-light);
+  --color-easyafrik-accent-dark: var(--easyafrik-accent-dark);
+  --color-easyafrik-text: var(--easyafrik-text);
+  --color-easyafrik-muted: var(--easyafrik-muted);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --radius: 0.45rem;
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.147 0.004 49.25);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.147 0.004 49.25);
+  --primary: oklch(0.488 0.243 264.376);
+  --primary-foreground: oklch(0.97 0.014 254.604);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.97 0.001 106.424);
+  --muted-foreground: oklch(0.553 0.013 58.071);
+  --accent: oklch(0.488 0.243 264.376);
+  --accent-foreground: oklch(0.97 0.014 254.604);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.923 0.003 48.717);
+  --input: oklch(0.923 0.003 48.717);
+  --ring: oklch(0.709 0.01 56.259);
+  --chart-1: oklch(0.809 0.105 251.813);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.546 0.245 262.881);
+  --chart-4: oklch(0.488 0.243 264.376);
+  --chart-5: oklch(0.424 0.199 265.638);
+  --sidebar: oklch(0.985 0.001 106.423);
+  --sidebar-foreground: oklch(0.147 0.004 49.25);
+  --sidebar-primary: oklch(0.546 0.245 262.881);
+  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
+  --sidebar-accent: oklch(0.97 0.001 106.424);
+  --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
+  --sidebar-border: oklch(0.923 0.003 48.717);
+  --sidebar-ring: oklch(0.709 0.01 56.259);
+  --easyafrik-bg: #f6f4ef;
+  --easyafrik-bg2: #ffffff;
+  --easyafrik-accent: #e85f37;
+  --easyafrik-accent-light: #ff8057;
+  --easyafrik-accent-dark: #bd4423;
+  --easyafrik-text: #18201d;
+  --easyafrik-muted: #6d746f;
+  --easyafrik-neutral-100: #faf8f3;
+  --easyafrik-neutral-200: #eeeae1;
+  --easyafrik-neutral-300: #ddd6c9;
+  --easyafrik-neutral-400: #bbb2a3;
+  --easyafrik-neutral-500: #786f64;
+  --easyafrik-border: rgba(37, 47, 42, 0.14);
+  --easyafrik-border-strong: rgba(232, 95, 55, 0.34);
+  --easyafrik-surface: rgba(255, 255, 255, 0.82);
+  --easyafrik-surface-soft: rgba(232, 95, 55, 0.08);
+  --easyafrik-overlay: rgba(255, 255, 255, 0.94);
+  --easyafrik-shadow: 0 18px 48px rgba(48, 65, 84, 0.08);
+  --easyafrik-panel: rgba(255, 253, 248, 0.94);
+  --easyafrik-panel-strong: rgba(246, 244, 239, 0.96);
+  --easyafrik-canvas: #f1eee6;
+  --easyafrik-ink: #18201d;
+  --easyafrik-ink-soft: #46514b;
+  --easyafrik-accent-strong: #c84928;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.147 0.004 49.25);
+}
+
+.dark {
+  --background: oklch(0.147 0.004 49.25);
+  --foreground: oklch(0.985 0.001 106.423);
+  --card: oklch(0.216 0.006 56.043);
+  --card-foreground: oklch(0.985 0.001 106.423);
+  --popover: oklch(0.216 0.006 56.043);
+  --popover-foreground: oklch(0.985 0.001 106.423);
+  --primary: oklch(0.424 0.199 265.638);
+  --primary-foreground: oklch(0.97 0.014 254.604);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.268 0.007 34.298);
+  --muted-foreground: oklch(0.709 0.01 56.259);
+  --accent: oklch(0.424 0.199 265.638);
+  --accent-foreground: oklch(0.97 0.014 254.604);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.553 0.013 58.071);
+  --chart-1: oklch(0.809 0.105 251.813);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.546 0.245 262.881);
+  --chart-4: oklch(0.488 0.243 264.376);
+  --chart-5: oklch(0.424 0.199 265.638);
+  --sidebar: oklch(0.216 0.006 56.043);
+  --sidebar-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-primary: oklch(0.623 0.214 259.815);
+  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
+  --sidebar-accent: oklch(0.268 0.007 34.298);
+  --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.553 0.013 58.071);
+  /* EasyAfrik dark palette (Riverside layout, EasyAfrik mint primary) */
+  --easyafrik-bg: #0a0a0a;
+  --easyafrik-bg2: #0a0a0a;
+  --easyafrik-accent: #51e0cf;
+  --easyafrik-accent-light: #6deddc;
+  --easyafrik-accent-dark: #128b87;
+  --easyafrik-text: #ffffffd9;
+  --easyafrik-muted: #8b8b8b;
+  --easyafrik-neutral-100: #0f0f10;
+  --easyafrik-neutral-200: #161618;
+  --easyafrik-neutral-300: #1d1d20;
+  --easyafrik-neutral-400: #28282c;
+  --easyafrik-neutral-500: #3a3a40;
+  --easyafrik-border: rgba(255, 255, 255, 0.08);
+  --easyafrik-border-strong: rgba(81, 224, 207, 0.45);
+  --easyafrik-surface: rgba(255, 255, 255, 0.035);
+  --easyafrik-surface-soft: rgba(81, 224, 207, 0.10);
+  --easyafrik-overlay: rgba(15, 15, 16, 0.96);
+  --easyafrik-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
+  --easyafrik-panel: #131316;
+  --easyafrik-panel-strong: #1a1a1e;
+  --easyafrik-canvas: #1a1a1e;
+  --easyafrik-ink: #ffffff;
+  --easyafrik-ink-soft: #d1d1d6;
+  --easyafrik-accent-strong: #6deddc;
+}
+
+.easyafrik-dashboard-shell {
+  --easyafrik-bg: #101511;
+  --easyafrik-bg2: #141a15;
+  --easyafrik-accent: #ff8a5b;
+  --easyafrik-accent-light: #ffb07a;
+  --easyafrik-accent-dark: #d96441;
+  --easyafrik-text: #fff9ec;
+  --easyafrik-muted: #aeb7aa;
+  --easyafrik-neutral-100: #141a15;
+  --easyafrik-neutral-200: #1b231d;
+  --easyafrik-neutral-300: #253026;
+  --easyafrik-neutral-400: #354238;
+  --easyafrik-neutral-500: #6f7a70;
+  --easyafrik-border: rgba(255, 249, 236, 0.12);
+  --easyafrik-border-strong: rgba(255, 176, 122, 0.42);
+  --easyafrik-surface: rgba(255, 249, 236, 0.05);
+  --easyafrik-surface-soft: rgba(255, 138, 91, 0.13);
+  --easyafrik-overlay: rgba(20, 26, 21, 0.97);
+  --easyafrik-shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
+  --easyafrik-panel: #171e19;
+  --easyafrik-panel-strong: #1d261f;
+  --easyafrik-canvas: #202920;
+  --easyafrik-ink: #fff9ec;
+  --easyafrik-ink-soft: #e4dcca;
+  --easyafrik-accent-strong: #ffd18f;
+}
+
+/*
+  Le bloc `@layer base` de l'ancien fichier (redéfinition de body, h1-h6,
+  `html { @apply font-sans }`) n'est volontairement PAS repris : appliqué dans
+  le même `@layer base` que celui plus haut, il l'aurait emporté en cascade et
+  cassé la police, le fond et les couleurs de la landing sur tout le site.
+  Seules les classes utilitaires ci-dessous, scopées et sans risque de
+  collision, sont reprises.
+*/
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* ShimmerButton (MagicUI style) — keyframes */
+@keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+@keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+  15%,
+  35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+  65%,
+  85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+.animate-shimmer-slide {
+  animation: shimmer-slide var(--speed, 3s) ease-in-out infinite alternate;
+}
+
+.animate-spin-around {
+  animation: spin-around calc(var(--speed, 3s) * 2) infinite linear;
+}
+
+/*
+  Header rhythm. One scale, three steps — change these and the whole bar
+  breathes together instead of drifting apart.
+    gap  : between the three pills (mark · links · buy)
+    pad  : horizontal padding inside a pill
+    link : between two nav items
+*/
+:root {
+  /* Valeurs mobiles : le header doit tenir dans 360px avec ses trois pilules. */
+  --header-gap: 0.5rem; /* 8px */
+  --header-pad: 1.25rem; /* 20px */
+  --header-link-gap: 2.5rem; /* 40px — le menu n'existe qu'à partir de lg */
+
+  /*
+    Rythme vertical des sections. Chaque section pose --section-y en haut et en
+    bas : deux sections voisines créent donc le double de respiration, sans que
+    personne n'ait à compter les marges de son voisin.
+      y      : padding vertical d'une section
+      head   : de l'en-tête au contenu
+      title  : du titre à son sous-titre
+  */
+  --section-y: 3.5rem; /* 56px, soit 112px entre deux sections */
+  --section-head: 3rem; /* 48px */
+  --section-title: 1.25rem; /* 20px */
+
+  /* Un seul rayon pour toutes les cartes du site. */
+  --radius-card: 20px;
+}
+
+/* Le header ne retrouve ses valeurs pleines qu'avec son menu, a lg. */
+@media (min-width: 1024px) {
+  :root {
+    --header-gap: 1rem; /* 16px */
+    --header-pad: 2rem; /* 32px = 2 × gap */
+  }
+}
+
+@layer base {
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+
+  /*
+    Le header est fixe : sans cette marge, un lien d'ancre amène le titre de
+    section juste derrière lui. La valeur couvre sa hauteur la plus grande.
+  */
+  section[id] {
+    scroll-margin-top: 7rem;
+  }
+
+  /* Le corps de texte porte la base 16/24 : tout hérite de là. */
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Un titre sans classe retombe sur 42/48, la taille de référence. */
+  h1,
+  h2 {
+    font-size: var(--text-title);
+    line-height: var(--text-title--line-height);
+    letter-spacing: var(--text-title--letter-spacing);
+    font-weight: 700;
+  }
+
+  h3,
+  h4 {
+    font-size: var(--text-subtitle);
+    line-height: var(--text-subtitle--line-height);
+    letter-spacing: var(--text-subtitle--letter-spacing);
+    font-weight: 700;
+  }
+
+  ::selection {
+    background: rgba(236, 68, 146, 0.18);
+  }
+}
+
+@layer components {
+  /* Habillage unique des cartes : même rayon, même filet, même fond. */
+  .card {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-hairline);
+    background: var(--color-surface);
+  }
+
+  /* Variante posée sur fond gris clair, sans filet. */
+  .card-soft {
+    border-radius: var(--radius-card);
+    background: var(--color-field);
+  }
+
+  /*
+    Dégradé de marque, source unique. Le halo blanc intérieur (`inset`) éclaircit
+    les bords : sans lui le dégradé ressort trop dur et trop saturé.
+  */
+  .brand-gradient,
+  .brand-gradient-plain {
+    background: linear-gradient(
+      90deg,
+      #3e86c6 0%,
+      #a666aa 25%,
+      #ec4492 50%,
+      #ee4454 75%,
+      #f05427 100%
+    );
+  }
+
+  /* Surfaces pleines uniquement. Sur un filet de 2px le halo mangerait le trait. */
+  .brand-gradient {
+    box-shadow: inset 0 0 20px 0 rgba(255, 255, 255, 0.9);
+  }
+}
+
+/*
+  Illustrations des étapes 01 et 03 : un cycle unique de 6 s, découpé en
+  pourcentages. Toutes les pièces partagent la même durée, donc la séquence
+  reste synchrone sans qu'on ait à empiler des délais.
+*/
+
+/* Étape 01 — le lien se saisit, puis la validation tombe. */
+@keyframes url-type {
+  0%,
+  6% {
+    width: 0;
+  }
+  30%,
+  88% {
+    width: 74%;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes badge-pop {
+  0%,
+  33% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  44%,
+  88% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes row-rise {
+  0%,
+  48% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  60%,
+  88% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Étape 03 — les commandes tombent, les statuts avancent, l'encaissement sort. */
+@keyframes file-drop {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  22%,
+  88% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes block-grow {
+  0%,
+  26% {
+    transform: scaleX(0);
+  }
+  46%,
+  88% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes playhead-sweep {
+  0%,
+  46% {
+    left: 0%;
+    opacity: 0;
+  }
+  52% {
+    opacity: 1;
+  }
+  84% {
+    left: 100%;
+    opacity: 1;
+  }
+  90%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes result-pop {
+  0%,
+  62% {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  74%,
+  88% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+/*
+  Orbite : le porteur tourne, la pastille tourne à l'envers à la même vitesse.
+  Sans ce contre-mouvement le texte se retrouverait à l'envers en bas de course.
+*/
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-counter {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* Piste défilable sans barre visible : la navigation passe par les flèches. */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Apparition au défilement : état de repos, puis levée par la classe `is-visible`. */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 50px, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+  Carrousel cylindrique : les cartes sont posées sur un cylindre virtuel
+  (rotateY par pas réguliers + translateZ = rayon), et c'est le cylindre
+  entier qui tourne. Rien ne défile latéralement.
+*/
+@keyframes spin-carousel {
+  0% {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.animate-spin-carousel {
+  animation: spin-carousel var(--carousel-duration, 35s) linear infinite;
+}
+
+.animate-spin-carousel:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

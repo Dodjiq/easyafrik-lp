@@ -1,0 +1,21 @@
+# Dépendances
+node_modules/
+
+# Build Next.js
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# Variables d'environnement
+.env
+.env.*
+!.env.example
+
+# Réglages locaux d'outillage (propres à une machine)
+.claude/settings.local.json
+
+# Système
+.DS_Store
+Thumbs.db
