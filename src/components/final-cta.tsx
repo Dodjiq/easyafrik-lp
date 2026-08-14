@@ -20,13 +20,18 @@ export const FinalCta: React.FC = () => (
           plus longue tienne d'un bloc. Au-delà de sm, la taille d'origine reprend.
         */}
         <h2 className="mt-8 text-[clamp(1.2rem,5.4vw,2rem)] font-bold leading-[1.15] tracking-tight text-ink sm:text-[clamp(2rem,4.6vw,3.5rem)] sm:leading-[1.1]">
-          Prêt à vendre en COD et
+          Prêt à lancer votre boutique
           <br />
           <span className="bg-gradient-to-r from-accent-start to-accent-mid bg-clip-text text-transparent">
-            à être payé facilement
+            et à changer votre vie
           </span>{' '}
           ?
         </h2>
+
+        <p className="mx-auto mt-[var(--section-title)] max-w-[52ch] text-pretty text-lead leading-relaxed text-ink-soft">
+          Rejoignez des milliers d&apos;entrepreneurs africains qui développent leur business avec
+          EasyAfrik.
+        </p>
 
         {/* Le halo est un calque flouté derrière le bouton, pas une ombre :
             il déborde largement et donne la lueur de la référence. */}
