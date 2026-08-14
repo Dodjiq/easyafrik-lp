@@ -19,3 +19,8 @@ next-env.d.ts
 # Système
 .DS_Store
 Thumbs.db
+
+# Sortie de l'adaptateur Cloudflare
+.open-next/
+.dev.vars
+.wrangler/

@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // Doit correspondre exactement au nom du Worker dans Cloudflare.
+  // C'est le désaccord entre ce nom et celui du package.json qui faisait
+  // échouer le déploiement sur un WORKER_SELF_REFERENCE introuvable.
+  "name": "easyafrik-lp",
+
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-14",
+
+  // `nodejs_compat` est requis par l'adaptateur OpenNext.
+  "compatibility_flags": ["nodejs_compat"],
+
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+
+  // Volontairement absent : le cache incrémental R2 et la liaison
+  // WORKER_SELF_REFERENCE que `migrate` ajoutait d'office. Cette landing n'a
+  // aucune page à revalider — quatre routes, dont trois pré-rendues — donc ce
+  // cache n'apporte rien et c'est lui qui cassait le déploiement.
+}
