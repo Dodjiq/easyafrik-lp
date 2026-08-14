@@ -17,4 +17,15 @@ import { defineCloudflareConfig } from '@opennextjs/cloudflare';
   configuration différente, avec un cache R2 et une auto-référence qui
   pointaient vers un nom de Worker erroné.
 */
-export default defineCloudflareConfig();
+export default {
+  ...defineCloudflareConfig(),
+
+  /*
+    Sans cette ligne, `opennextjs-cloudflare build` lance `npm run build` par
+    défaut pour construire l'app Next. Or `npm run build` pointe justement sur
+    `opennextjs-cloudflare build`, pour que la CI Cloudflare produise le Worker
+    sans réglage particulier — la commande s'appellerait donc elle-même en
+    boucle. On la renvoie explicitement vers le build Next.
+  */
+  buildCommand: 'npm run build:next',
+};
